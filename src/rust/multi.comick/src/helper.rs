@@ -6,6 +6,9 @@ use aidoku::{
 	MangaStatus,
 };
 
+extern crate alloc;
+use alloc::collections::BTreeMap;
+
 pub fn get_lang_code() -> Option<String> {
 	if let Ok(lang) = defaults_get("languages") {
 		if let Ok(languages) = lang.as_array() {
@@ -97,4 +100,20 @@ pub fn manga_status(status: i64) -> MangaStatus {
 		2 => MangaStatus::Completed,
 		_ => MangaStatus::Unknown,
 	}
+}
+
+pub fn group_by<T, K, F>(items: Vec<T>, mut key_extractor: F) -> BTreeMap<K, Vec<T>>
+where
+    T: Clone,
+    K: Ord + Clone,
+    F: FnMut(&T) -> K,
+{
+    let mut groups: BTreeMap<K, Vec<T>> = BTreeMap::new();
+
+    for item in items {
+        let key = key_extractor(&item);
+        groups.entry(key).or_insert_with(Vec::new).push(item.clone());
+    }
+
+    groups
 }

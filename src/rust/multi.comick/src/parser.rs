@@ -1,7 +1,7 @@
 use aidoku::{
 	error::Result,
 	prelude::format,
-	std::{html::unescape_html_entities, net::HttpMethod, net::Request, String, Vec},
+	std::{defaults::defaults_get, html::unescape_html_entities, net::HttpMethod, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -321,7 +321,20 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 			lang: get_lang_code().unwrap_or_else(|| String::from("en")),
 		});
 	}
-	Ok(chapters)
+	let group_chapters = match defaults_get("groupChapters") {
+		Ok(group_chapters) => group_chapters.as_bool().unwrap_or(false),
+		Err(_) => false,
+	};
+	let ignore_volume = match defaults_get("ignoreVolume") {
+		Ok(ignore_volume) => ignore_volume.as_bool().unwrap_or(false),
+		Err(_) => false,
+	};
+	if !group_chapters {
+	   return Ok(chapters);
+	}
+	let grouped_chapters = group_by(chapters, |chapter| format!("{}/{}", if ignore_volume { -1.0 } else { chapter.volume }, chapter.chapter));
+    let grouped_chapters: Vec<Chapter> = grouped_chapters.clone().into_iter().filter_map(|(_,group)| group.into_iter().next()).collect();
+	Ok(grouped_chapters)
 }
 
 pub fn parse_page_list(api_url: String, chapter_id: String) -> Result<Vec<Page>> {

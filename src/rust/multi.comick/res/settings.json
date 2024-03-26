@@ -1,0 +1,23 @@
+[
+  {
+    "type": "group",
+    "title": "Settings",
+    "items": [
+      {
+        "type": "switch",
+        "key": "groupChapters",
+        "title": "Group Chapters",
+        "subtitle": "Group same chapters from different sources",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "key": "ignoreVolume",
+        "title": "Ignore Volume",
+        "requires": "groupChapters",
+        "subtitle": "Ignore volume number when grouping chapters",
+        "default": false
+      }
+    ]
+  }
+]
