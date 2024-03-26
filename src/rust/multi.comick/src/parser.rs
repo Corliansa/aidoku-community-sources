@@ -333,7 +333,7 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 	   return Ok(chapters);
 	}
 	let grouped_chapters = group_by(chapters, |chapter| format!("{}/{}", if ignore_volume { -1.0 } else { chapter.volume }, chapter.chapter));
-    let mut grouped_chapters: Vec<Chapter> = grouped_chapters.clone().into_iter().filter_map(|(_,group)| group.into_iter().next()).collect();
+    let mut grouped_chapters: Vec<Chapter> = grouped_chapters.clone().into_iter().filter_map(|(_,group)| take_chapter(group)).collect();
     grouped_chapters.sort_by(|a,b| {
         b.chapter.partial_cmp(&a.chapter).unwrap().then_with(|| b.volume.partial_cmp(&a.volume).unwrap())
     });

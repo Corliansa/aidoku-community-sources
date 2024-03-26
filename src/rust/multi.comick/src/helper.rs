@@ -1,9 +1,5 @@
 use aidoku::{
-	prelude::format,
-	std::defaults::defaults_get,
-	std::Vec,
-	std::{ObjectRef, String},
-	MangaStatus,
+	prelude::format, std::{defaults::defaults_get, ArrayRef, ObjectRef, String, Vec}, Chapter, MangaStatus
 };
 
 extern crate alloc;
@@ -116,4 +112,20 @@ where
     }
 
     groups
+}
+
+pub fn take_chapter(group: Vec<Chapter>) -> Option<Chapter> {
+    if let Ok(scanlator_priorities) = defaults_get("scanlatorPriorities") {
+        if let Ok(scanlator_priorities) = scanlator_priorities.as_string() {
+            let priorities = scanlator_priorities.read();
+            let priorities: Vec<&str> = priorities.split(',').map(|s| s.trim()).collect();
+            for priority in priorities {
+                if let Some(chapter) = group.iter().find(|c| c.scanlator == priority) {
+                    return Some(chapter.clone());
+                }
+            }
+        }
+    }
+
+    group.first().cloned()
 }
