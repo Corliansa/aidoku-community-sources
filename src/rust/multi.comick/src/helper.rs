@@ -1,5 +1,5 @@
 use aidoku::{
-	prelude::format, std::{defaults::defaults_get, ArrayRef, ObjectRef, String, Vec}, Chapter, MangaStatus
+	prelude::format, std::{defaults::defaults_get, ObjectRef, String, Vec}, Chapter, MangaStatus
 };
 
 extern crate alloc;

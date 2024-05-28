@@ -17,13 +17,18 @@
         "requires": "groupChapters",
         "subtitle": "Ignore volume number when grouping chapters",
         "default": false
-      },
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "footer": "A comma-separated list of scanlators. Prioritizes scanlator to show on grouped chapters.",
+    "items": [
       {
         "type": "text",
         "key": "scanlatorPriorities",
-        "title": "Scanlator Priorities",
+        "placeholder": "Scanlator Priorities",
         "requires": "groupChapters",
-        "subtitle": "A comma-separated list of scanlators. Show specific scanlator (if available) based on the order of priority",
         "default": "Official"
       }
     ]
