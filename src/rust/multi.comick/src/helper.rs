@@ -1,5 +1,7 @@
 use aidoku::{
-	prelude::format, std::{defaults::defaults_get, ObjectRef, String, Vec}, Chapter, MangaStatus
+	prelude::format,
+	std::{defaults::defaults_get, ObjectRef, String, Vec},
+	Chapter, MangaStatus,
 };
 
 extern crate alloc;
@@ -100,32 +102,42 @@ pub fn manga_status(status: i64) -> MangaStatus {
 
 pub fn group_by<T, K, F>(items: Vec<T>, mut key_extractor: F) -> BTreeMap<K, Vec<T>>
 where
-    T: Clone,
-    K: Ord + Clone,
-    F: FnMut(&T) -> K,
+	T: Clone,
+	K: Ord + Clone,
+	F: FnMut(&T) -> K,
 {
-    let mut groups: BTreeMap<K, Vec<T>> = BTreeMap::new();
+	let mut groups: BTreeMap<K, Vec<T>> = BTreeMap::new();
 
-    for item in items {
-        let key = key_extractor(&item);
-        groups.entry(key).or_insert_with(Vec::new).push(item.clone());
-    }
+	for item in items {
+		let key = key_extractor(&item);
+		groups
+			.entry(key)
+			.or_insert_with(Vec::new)
+			.push(item.clone());
+	}
 
-    groups
+	groups
 }
 
 pub fn take_chapter(group: Vec<Chapter>) -> Option<Chapter> {
-    if let Ok(scanlator_priorities) = defaults_get("scanlatorPriorities") {
-        if let Ok(scanlator_priorities) = scanlator_priorities.as_string() {
-            let priorities = scanlator_priorities.read();
-            let priorities: Vec<&str> = priorities.split(',').map(|s| s.trim()).collect();
-            for priority in priorities {
-                if let Some(chapter) = group.iter().find(|c| c.scanlator == priority) {
-                    return Some(chapter.clone());
-                }
-            }
-        }
-    }
+	let prioritize_scanlators = match defaults_get("prioritizeScanlators") {
+		Ok(ignore_volume) => ignore_volume.as_bool().unwrap_or(false),
+		Err(_) => false,
+	};
 
-    group.first().cloned()
+	if prioritize_scanlators {
+		if let Ok(scanlator_priorities) = defaults_get("scanlatorPriorities") {
+			if let Ok(scanlator_priorities) = scanlator_priorities.as_string() {
+				let priorities = scanlator_priorities.read();
+				let priorities: Vec<&str> = priorities.split(',').map(|s| s.trim()).collect();
+				for priority in priorities {
+					if let Some(chapter) = group.iter().find(|c| c.scanlator == priority) {
+						return Some(chapter.clone());
+					}
+				}
+			}
+		}
+	}
+
+	group.first().cloned()
 }

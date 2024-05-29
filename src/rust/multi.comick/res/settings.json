@@ -7,7 +7,7 @@
         "type": "switch",
         "key": "groupChapters",
         "title": "Group Chapters",
-        "subtitle": "Group same chapters from different sources",
+        "subtitle": "Group same chapters from different sources.",
         "default": false
       },
       {
@@ -15,20 +15,27 @@
         "key": "ignoreVolume",
         "title": "Ignore Volume",
         "requires": "groupChapters",
-        "subtitle": "Ignore volume number when grouping chapters",
+        "subtitle": "Ignore volume number when grouping chapters.",
+        "default": false
+      },
+      {
+        "type": "switch",
+        "key": "prioritizeScanlators",
+        "title": "Enable Scanlator Prioritization",
+        "requires": "groupChapters",
+        "subtitle": "Prioritizes scanlator to show on grouped chapters.",
         "default": false
       }
     ]
   },
   {
     "type": "group",
-    "footer": "A comma-separated list of scanlators. Prioritizes scanlator to show on grouped chapters.",
+    "footer": "A comma-separated list of scanlators to prioritize.",
     "items": [
       {
         "type": "text",
         "key": "scanlatorPriorities",
-        "placeholder": "Scanlator Priorities",
-        "requires": "groupChapters",
+        "requires": "prioritizeScanlators",
         "default": "Official"
       }
     ]
